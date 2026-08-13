@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>ankhangbo</groupId>
+  <artifactId>modloader-agent</artifactId>
+  <version>1.0.0</version>
+  <packaging>jar</packaging>
+
+  <properties>
+    <maven.compiler.source>21</maven.compiler.source>
+    <maven.compiler.target>21</maven.compiler.target>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <!-- This is the class the JVM calls when -javaagent:modloader-agent.jar is used -->
+    <agent.mainclass>ankhangbo.modloader.ModLoaderAgent</agent.mainclass>
+  </properties>
+
+  <repositories>
+    <!-- Sponge Powered Mixin -->
+    <repository>
+      <id>sponge</id>
+      <url>https://repo.spongepowered.org/repository/maven-public/</url>
+    </repository>
+    <!-- PaperMC API (only needed at compile-time for the loader's Bukkit/Paper hooks) -->
+    <repository>
+      <id>papermc</id>
+      <url>https://repo.papermc.io/repository/maven-public/</url>
+    </repository>
+
+	<repository>
+        <id>minecraft-repo</id>
+        <url>https://libraries.minecraft.net/</url>
+    </repository>
+
+    <repository>
+        <id>fabric</id>
+        <url>https://maven.fabricmc.net/</url>
+    </repository>
+
+	<repository>
+		<id>codemc-repo</id>
+		<url>https://repo.codemc.io/repository/maven-public/</url>
+	</repository>
+
+  </repositories>
+
+  <dependencies>
+  
+	<dependency>
+		<groupId>com.github.retrooper</groupId>
+		<artifactId>packetevents-api</artifactId>
+		<version>2.13.0</version>
+		<scope>provided</scope>
+	</dependency>
+  
+    <!-- ASM: bytecode reading/patching -->
+    <dependency>
+      <groupId>org.ow2.asm</groupId>
+      <artifactId>asm</artifactId>
+      <version>9.9.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.ow2.asm</groupId>
+      <artifactId>asm-tree</artifactId>
+      <version>9.9.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.ow2.asm</groupId>
+      <artifactId>asm-commons</artifactId>
+      <version>9.9.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.ow2.asm</groupId>
+      <artifactId>asm-util</artifactId>
+      <version>9.9.1</version>
+    </dependency>
+
+    <!-- Netty dependencies -->
+    <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-all</artifactId>
+        <version>4.1.100.Final</version>
+		<scope>provided</scope>
+    </dependency>
+    
+    <!-- Or if you prefer specific modules, you can use these instead: -->
+    <!--
+    <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-buffer</artifactId>
+        <version>4.1.100.Final</version>
+    </dependency>
+    <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-common</artifactId>
+        <version>4.1.100.Final</version>
+    </dependency>
+    <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-transport</artifactId>
+        <version>4.1.100.Final</version>
+    </dependency>
+    <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-codec</artifactId>
+        <version>4.1.100.Final</version>
+    </dependency>
+    <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-handler</artifactId>
+        <version>4.1.100.Final</version>
+    </dependency>
+    -->
+
+	<dependency>
+		<groupId>com.mojang</groupId>
+		<artifactId>authlib</artifactId>
+		<version>7.0.63</version> 
+	</dependency>
+
+	<dependency>
+		<groupId>com.electronwill.night-config</groupId>
+		<artifactId>core</artifactId>
+		<version>3.8.3</version>
+	</dependency>
+
+	<dependency>
+		<groupId>org.apache.commons</groupId>
+		<artifactId>commons-lang3</artifactId>
+		<version>3.18.0</version>
+	</dependency>
+
+	<dependency>
+		<groupId>commons-io</groupId>
+		<artifactId>commons-io</artifactId>
+		<version>2.20.0</version>
+	</dependency>
+
+	<dependency>
+		<groupId>com.electronwill.night-config</groupId>
+		<artifactId>toml</artifactId>
+		<version>3.8.3</version>
+	</dependency>
+
+	<dependency>
+		<groupId>org.slf4j</groupId>
+		<artifactId>slf4j-api</artifactId>
+		<version>2.0.16</version>
+	</dependency>
+	<dependency>
+		<groupId>org.slf4j</groupId>
+		<artifactId>slf4j-simple</artifactId>
+		<version>2.0.16</version>
+	</dependency>
+
+    <!-- SpongePowered Mixin: annotation-driven bytecode patching (@Inject, @Redirect, ...) -->
+    <dependency>
+        <groupId>net.fabricmc</groupId>
+        <artifactId>sponge-mixin</artifactId>
+        <version>0.17.3+mixin.0.8.7</version>
+    </dependency>
+
+    <!-- Gson: parsing mods.json / *.mixins.json -->
+    <dependency>
+      <groupId>com.google.code.gson</groupId>
+      <artifactId>gson</artifactId>
+      <version>2.11.0</version>
+    </dependency>
+
+	<dependency>
+		<groupId>com.google.guava</groupId>
+		<artifactId>guava</artifactId>
+		<version>33.2.1-jre</version>
+	</dependency>
+
+	<dependency>
+		<groupId>net.minecraft</groupId>
+		<artifactId>launchwrapper</artifactId>
+		<version>1.12</version>
+	</dependency>
+
+	<dependency>
+		<groupId>com.mojang</groupId>
+		<artifactId>datafixerupper</artifactId>
+		<version>9.0.19</version>
+		<scope>provided</scope>
+	</dependency>
+
+	<dependency>
+		<groupId>com.mojang</groupId>
+		<artifactId>brigadier</artifactId>
+		<version>1.3.10</version>
+		<scope>provided</scope>
+	</dependency>
+
+	<dependency>
+		<groupId>net.jodah</groupId>
+		<artifactId>typetools</artifactId>
+		<version>0.6.3</version>
+	</dependency>
+
+	<!-- Log4j - cho logging -->
+	<dependency>
+		<groupId>org.apache.logging.log4j</groupId>
+		<artifactId>log4j-core</artifactId>
+		<version>2.23.1</version>
+	</dependency>
+	<dependency>
+		<groupId>org.apache.logging.log4j</groupId>
+		<artifactId>log4j-api</artifactId>
+		<version>2.23.1</version>
+	</dependency>
+
+
+	<dependency>
+		<groupId>io.papermc.paper</groupId>
+		<artifactId>paper</artifactId>
+		<version>26.1.2</version>
+		<scope>system</scope>
+		<systemPath>${project.basedir}/jar/paper-26.1.2.jar</systemPath>
+	</dependency>
+
+    <!-- Paper server API, compile-only: we never ship this, the server already has it at runtime -->
+    <dependency>
+      <groupId>io.papermc.paper</groupId>
+      <artifactId>paper-api</artifactId>
+      <version>[26.1.2.build,)</version>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <finalName>modloader-agent</finalName>
+    <plugins>
+      <!-- Shade: bundle ASM/Gson/Mixin INTO the agent jar so it has zero external classpath deps -->
+	<plugin>
+		<groupId>org.apache.maven.plugins</groupId>
+		<artifactId>maven-shade-plugin</artifactId>
+		<version>3.5.1</version>
+		<executions>
+			<execution>
+				<phase>package</phase>
+				<goals><goal>shade</goal></goals>
+				<configuration>
+					<relocations>
+						<!--
+						  KHÔNG relocate org.objectweb.asm nữa.
+
+						  Lý do: MixinExtras (và có thể các thư viện Fabric khác) dùng
+						  reflection để tìm method nội bộ của chính Mixin bằng tên ASM GỐC,
+						  ví dụ ClassInfo.fromClassNode(org.objectweb.asm.tree.ClassNode).
+						  Relocate org.objectweb.asm sẽ viết lại luôn bytecode NỘI BỘ của
+						  sponge-mixin (không chỉ code của chúng ta), đổi chữ ký method đó
+						  thành ...libs.asm.tree.ClassNode -> reflection lookup của
+						  MixinExtras luôn throw NoSuchMethodException (đã xác nhận qua log).
+
+						  Không cần relocate để né conflict version nữa vì:
+						  1) Paper (server) và project này đều dùng đúng ASM 9.9.1 — không có
+						     version nào khác để đụng độ.
+						  2) Ngay cả nếu khác version, ASM/Mixin của agent chạy trên
+						     mixinHost classloader tách biệt hoàn toàn khỏi bukkitLoader của
+						     Paper (xem MixinAwareClassLoader) — 2 bản class không bao giờ
+						     cần ép kiểu qua lại nên không xung đột.
+
+						  Filter "LOẠI BỎ ASM CŨ CỦA MIXIN" bên dưới vẫn giữ nguyên — vẫn cần
+						  để đảm bảo org/objectweb/asm/** trong jar cuối cùng chỉ đến từ 1
+						  nguồn duy nhất (org.ow2.asm:asm:9.9.1 của chính chúng ta), không bị
+						  đè bởi bản ASM mà sponge-mixin tự bundle kèm.
+						-->
+						<relocation>
+							<pattern>com.google.gson</pattern>
+							<shadedPattern>ankhangbo.modloader.libs.gson</shadedPattern>
+						</relocation>
+					</relocations>
+					
+					<!-- ⭐ THÊM TRANSFORMER ĐỂ THÊM VERSION VÀO MANIFEST -->
+					<transformers>
+						<transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+							<manifestEntries>
+								<Premain-Class>ankhangbo.modloader.ModLoaderAgent</Premain-Class>
+								<Agent-Class>ankhangbo.modloader.ModLoaderAgent</Agent-Class>
+								<Can-Retransform-Classes>true</Can-Retransform-Classes>
+								<Can-Redefine-Classes>true</Can-Redefine-Classes>
+								<!-- ⭐ THÊM ASM VERSION -->
+								<Implementation-Title>ASM</Implementation-Title>
+								<Implementation-Version>9.9.1</Implementation-Version>
+								<Bundle-Name>org.objectweb.asm</Bundle-Name>
+								<Bundle-Version>9.9.1</Bundle-Version>
+							</manifestEntries>
+						</transformer>
+						<transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+					</transformers>
+					
+					<filters>
+						<!-- ⭐ LOẠI BỎ ASM CŨ CỦA MIXIN (vẫn giữ, không đổi) -->
+						<filter>
+							<artifact>net.fabricmc:sponge-mixin</artifact>
+							<excludes>
+								<exclude>org/objectweb/asm/**</exclude>
+							</excludes>
+						</filter>
+						
+						<!-- Filter chung -->
+						<filter>
+							<artifact>*:*</artifact>
+							<excludes>
+								<exclude>module-info.class</exclude>
+								<exclude>META-INF/*.SF</exclude>
+								<exclude>META-INF/*.DSA</exclude>
+								<exclude>META-INF/*.RSA</exclude>
+							</excludes>
+						</filter>
+					</filters>
+				</configuration>
+			</execution>
+		</executions>
+	</plugin>
+
+      <!-- Manifest: Premain-Class + Agent-Class + retransform flags -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>3.4.1</version>
+        <configuration>
+          <archive>
+            <manifestFile>src/main/resources/META-INF/MANIFEST.MF</manifestFile>
+          </archive>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>
